@@ -1,0 +1,30 @@
+@startuml
+
+actor User
+participant "AuthController" as AC
+participant "UserService" as US
+participant "JwtService" as JS
+participant "SecurityFilter" as SF
+participant "TaskController" as TC
+
+== Registration/Login ==
+
+User -> AC : POST /auth/login
+AC -> US : authenticate(email, password)
+US --> AC : User valid
+AC -> JS : generateToken(userId)
+JS --> AC : JWT
+AC --> User : JWT
+
+== Authenticated Request ==
+
+User -> SF : HTTP request + Bearer JWT
+SF -> JS : validateToken()
+JS --> SF : valid
+
+SF -> SF : set SecurityContext
+
+SF -> TC : forward request
+TC --> User : response
+
+@enduml

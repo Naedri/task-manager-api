@@ -1,0 +1,43 @@
+@startuml
+title Task Status State Machine
+
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #F8F9FA
+  BorderColor #2C3E50
+  ArrowColor #2C3E50
+}
+
+[*] --> CREATED : createTask()
+
+state CREATED
+state IN_PROGRESS
+state DONE
+
+CREATED --> IN_PROGRESS : startTask()\n[assignee is member]
+IN_PROGRESS --> DONE : completeTask()\n[assignee is member]
+
+' Forbidden transitions (documented)
+CREATED --> DONE : ❌ forbidden
+IN_PROGRESS --> CREATED : ❌ forbidden
+DONE --> IN_PROGRESS : ❌ forbidden
+DONE --> CREATED : ❌ forbidden
+
+DONE --> [*]
+
+note right of CREATED
+Initial state after creation
+Editable fields allowed
+end note
+
+note right of IN_PROGRESS
+Work has started
+Only assignee can complete
+end note
+
+note right of DONE
+Terminal state
+Task becomes immutable
+end note
+
+@enduml

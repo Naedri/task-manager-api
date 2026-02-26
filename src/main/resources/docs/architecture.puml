@@ -1,0 +1,69 @@
+@startuml
+title Task Manager API - Architecture
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+package "Client" {
+  [Frontend / Postman]
+}
+
+package "Spring Boot Application" {
+
+  package "API Layer" {
+    [AuthController]
+    [TaskController]
+    [GroupController]
+  }
+
+  package "Service Layer" {
+    [UserService]
+    [TaskService]
+    [GroupService]
+  }
+
+  package "Security" {
+    [JwtAuthenticationFilter]
+    [SecurityConfig]
+    [JwtService]
+  }
+
+  package "Persistence Layer" {
+    [UserRepository]
+    [TaskRepository]
+    [GroupRepository]
+    [MembershipRepository]
+  }
+
+  package "Domain" {
+    [User]
+    [Task]
+    [Group]
+    [Membership]
+  }
+}
+
+database "PostgreSQL" as DB
+
+[Frontend / Postman] --> [AuthController]
+[Frontend / Postman] --> [TaskController]
+[Frontend / Postman] --> [GroupController]
+
+[AuthController] --> [UserService]
+[TaskController] --> [TaskService]
+[GroupController] --> [GroupService]
+
+[SecurityConfig] --> [JwtAuthenticationFilter]
+[JwtAuthenticationFilter] --> [JwtService]
+
+[UserService] --> [UserRepository]
+[TaskService] --> [TaskRepository]
+[GroupService] --> [GroupRepository]
+[GroupService] --> [MembershipRepository]
+
+[UserRepository] --> DB
+[TaskRepository] --> DB
+[GroupRepository] --> DB
+[MembershipRepository] --> DB
+
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+title Task Manager API - Entity Relationship Diagram
+
+hide circle
+skinparam linetype ortho
+
+entity User {
+  +id : UUID
+  --
+  email : String
+  password : String
+  createdAt : Instant
+}
+
+entity Task {
+  +id : UUID
+  --
+  title : String
+  description : String
+  status : TaskStatus
+  ownerId : UUID
+  groupId : UUID
+  version : long
+  createdAt : Instant
+  updatedAt : Instant
+}
+
+entity "Group" as GroupEntity {
+  +id : UUID
+  --
+  name : String
+  createdAt : Instant
+}
+
+entity Membership {
+  +id : UUID
+  --
+  userId : UUID
+  groupId : UUID
+  role : String
+  joinedAt : Instant
+}
+
+User ||--o{ Task : owns
+GroupEntity ||--o{ Task : contains
+User ||--o{ Membership
+GroupEntity ||--o{ Membership
+
+@enduml
